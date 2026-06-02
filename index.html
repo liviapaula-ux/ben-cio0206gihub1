@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Benício - Concierge iFood</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- Biblioteca de ícones vetoriais para padrão iFood -->
+<script src="https://unpkg.com/@phosphor-icons/web"></script>
+<style>
+:root {
+  --ifood-red: #ea1d2c; --ifood-red-dark: #c41423;
+  --bg-app: #f8fafc; --bg-card: #ffffff;
+  --text-main: #1f2937; --text-muted: #64748b;
+  --border-color: #e2e8f0; --radius: 10px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', sans-serif; background: var(--bg-app); color: var(--text-main); font-size: 13px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+
+.app-container { display: flex; width: 100vw; height: 100vh; overflow: hidden; }
+
+/* ESQUERDA: DASHBOARD */
+#proposal-area { flex: 2; background: #ffffff; padding: 2rem 2.5rem; overflow-y: auto; display: none; border-right: 1px solid var(--border-color); position: relative; }
+.header-compact { margin-bottom: 1.5rem; }
+.header-compact h1 { font-size: 24px; font-weight: 700; color: #0f172a; margin-bottom: 4px; letter-spacing: -0.02em; }
+.header-compact p { font-size: 13.5px; color: var(--text-muted); max-width: 90%; }
+
+.proposal-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; align-items: start; }
+
+/* TODAS AS COLUNAS NO PADRÃO VERMELHO IFOOD */
+.col-category { 
+  border-radius: var(--radius); padding: 14px; min-height: 500px;
+  background: #fff1f2; border-top: 4px solid var(--ifood-red); 
+}
+.col-header { 
+  font-size: 12px; font-weight: 800; text-transform: uppercase; margin-bottom: 14px; 
+  display: flex; align-items: center; gap: 6px; letter-spacing: 0.02em; color: #be123c; 
+}
+.col-header i { font-size: 14px; color: var(--ifood-red); }
+
+/* CARDS COMPACTOS E INTERATIVOS */
+.benefit-card {
+  background: var(--bg-card); border: 1px solid rgba(0,0,0,0.06); border-radius: 8px;
+  padding: 12px 14px; margin-bottom: 10px; cursor: pointer; transition: all 0.2s ease-out;
+  position: relative; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+}
+.benefit-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.06); border-color: rgba(234, 29, 44, 0.3); }
+.benefit-card.open { border-color: var(--ifood-red); box-shadow: 0 6px 20px rgba(234, 29, 44, 0.12); transform: translateY(0); padding-bottom: 16px; }
+
+/* ÍCONES PADRÃO IFOOD (Branco e Vermelho) */
+.b-header { display: flex; align-items: center; gap: 12px; }
+.b-icon-wrapper { 
+  background: #ffffff; color: var(--ifood-red); border: 1.5px solid #fecdd3;
+  width: 42px; height: 42px; border-radius: 8px; 
+  display: flex; align-items: center; justify-content: center; font-size: 24px; 
+  transition: all 0.3s; flex-shrink: 0;
+}
+/* Inversão de cores ao abrir o card */
+.benefit-card.open .b-icon-wrapper { transform: scale(1.05); background: var(--ifood-red); color: #ffffff; border-color: var(--ifood-red); }
+
+.b-info { flex: 1; min-width: 0; }
+.b-title { font-size: 13.5px; font-weight: 700; color: #0f172a; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 45px; }
+.b-short { font-size: 11.5px; color: var(--text-muted); line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* BADGES MANTIDOS COMO INDICADORES DISCRETOS */
+.badge { position: absolute; top: 12px; right: 12px; font-size: 8.5px; font-weight: 800; padding: 3px 6px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.05em; }
+.badge-highlight { background: #ffe4e6; color: #e11d48; }
+.badge-alert { background: #fef3c7; color: #d97706; }
+.badge-special { background: #e0e7ff; color: #4338ca; }
+.badge-compulsory { background: #e2e8f0; color: #475569; }
+
+/* INTERIOR DO CARD */
+.b-expanded-content { display: none; margin-top: 14px; font-size: 12.5px; color: #334155; line-height: 1.5; border-top: 1px dashed var(--border-color); padding-top: 14px; }
+.benefit-card.open .b-expanded-content { display: block; animation: expandFade 0.3s ease-in-out; }
+@keyframes expandFade { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+
+.match-box { background: #fef2f2; border-radius: 6px; padding: 10px 12px; margin-bottom: 12px; border-left: 3px solid var(--ifood-red); }
+.match-title { font-size: 10.5px; font-weight: 800; color: var(--ifood-red); text-transform: uppercase; margin-bottom: 4px; display: flex; align-items: center; gap: 4px; }
+
+.dynamic-view { display: none; padding: 12px; background: #fff1f2; border-left: 3px solid var(--ifood-red); border-radius: 0 6px 6px 0; margin-top: 12px; font-size: 12.5px; }
+.dynamic-view.active { display: block; animation: flashHighlight 1.8s ease-out; }
+@keyframes flashHighlight { 0% { background-color: #fecdd3; } 100% { background-color: #fff1f2; } }
+.dynamic-header { font-weight: 800; color: var(--ifood-red); margin-bottom: 4px; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.05em; }
+
+/* Quick Pills (Sugestões rápidas) */
+.quick-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+.pill { background: #f1f5f9; border: 1px solid #e2e8f0; color: #475569; padding: 5px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+.pill:hover { background: #e2e8f0; color: var(--ifood-red); border-color: #cbd5e1; }
+.pill.cross-sell { background: #fffbeb; color: #b45309; border-color: #fde68a; }
+.pill.cross-sell:hover { background: #fef3c7; border-color: #fcd34d; color: #d97706; }
+
+/* DIREITA: CHAT */
+#chat-area { flex: 1; min-width: 400px; max-width: 800px; margin: 0 auto; background: var(--bg-card); display: flex; flex-direction: column; height: 100vh; transition: all 0.3s ease; border-left: 1px solid var(--border-color); }
+
+.chat-header-bar { padding: 16px 20px; border-bottom: 1px solid var(--border-color); background: #ffffff; display: flex; align-items: center; justify-content: space-between; }
+.chat-title { font-size: 14px; font-weight: 800; color: var(--ifood-red); text-transform: uppercase; letter-spacing: 0.05em; }
+.chat-status { font-size: 11px; color: #10b981; font-weight: 600; background: #ecfdf5; padding: 2px 8px; border-radius: 10px; }
+
+.chat-history { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 16px; background: #f8fafc; scroll-behavior: smooth; }
+.msg { display: flex; opacity: 0; animation: fadeIn 0.4s forwards ease-out; flex-direction: column; }
+@keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
+
+.msg-bot { align-items: flex-start; }
+.msg-user { align-items: flex-end; }
+.bubble { padding: 12px 16px; border-radius: 12px; max-width: 90%; font-size: 13px; line-height: 1.5; border: 1px solid transparent; }
+.msg-bot .bubble { background: #ffffff; border-color: #e2e8f0; color: #1e293b; box-shadow: 0 2px 4px rgba(0,0,0,0.02); border-radius: 12px 12px 12px 2px; }
+.msg-user .bubble { background: var(--ifood-red); color: #ffffff; font-weight: 500; border-radius: 12px 12px 2px 12px; }
+
+.options-container { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; width: 100%; }
+.btn-option { background: #ffffff; border: 1.5px solid #e2e8f0; color: #334155; padding: 10px 14px; border-radius: 8px; font-size: 12.5px; font-weight: 600; text-align: left; cursor: pointer; transition: all 0.2s; line-height: 1.4; }
+.btn-option:hover { border-color: var(--ifood-red); color: var(--ifood-red); background: #fffcfc; transform: translateX(4px); }
+
+.chat-input-bar { padding: 14px 20px; border-top: 1px solid var(--border-color); background: #ffffff; display: none; gap: 10px; align-items: center; }
+.chat-input-bar.active { display: flex; }
+.chat-input { flex: 1; padding: 12px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-family: 'Inter'; font-size: 13px; outline: none; transition: border 0.2s; background: #f8fafc; }
+.chat-input:focus { border-color: var(--ifood-red); background: #ffffff; }
+.btn-send { background: var(--ifood-red); color: white; border: none; padding: 0 16px; height: 44px; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 12.5px; transition: background 0.2s; }
+.btn-send:hover { background: var(--ifood-red-dark); }
+</style>
+</head>
+<body>
+
+<div class="app-container">
+  
+  <div id="proposal-area">
+    <div class="header-compact">
+      <h1>Seu Ecossistema iFood</h1>
+      <p>Organizamos as sugestões em pilares estratégicos. Clique nos cards e use os botões com ✨ para descobrir como conectar seus benefícios.</p>
+    </div>
+    <div class="proposal-grid">
+      <div class="col-category col-essenciais"><div class="col-header"><i class="ph-fill ph-circle"></i> Benefícios essenciais para você</div><div id="grid-essenciais"></div></div>
+      <div class="col-category col-explorar"><div class="col-header"><i class="ph-fill ph-circle"></i> Benefícios que vale explorar</div><div id="grid-explorar"></div></div>
+      <div class="col-category col-arriscar"><div class="col-header"><i class="ph-fill ph-circle"></i> Benefícios quero me arriscar!</div><div id="grid-arriscar"></div></div>
+    </div>
+  </div>
+
+  <div id="chat-area">
+    <div class="chat-header-bar">
+      <div class="chat-title">🤖 Benício AI</div>
+      <div class="chat-status">Online</div>
+    </div>
+    <div class="chat-history" id="chat-box"></div>
+    <div class="chat-input-bar" id="chat-input-bar">
+      <input type="text" id="main-input" class="chat-input" placeholder="Faça uma pergunta sobre regras...">
+      <button class="btn-send" onclick="handleTextInput()">Enviar</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// --- BANCO DE DADOS ATUALIZADO COM ÍCONES PHOSPHOR ---
+const benefitsDB = {
+  saude: { 
+    id: 'saude', name: 'Plano de Saúde', icon: '<i class="ph ph-first-aid-kit"></i>', badge: 'Obrigatório', short: 'Sua cobertura Bradesco / Unimed.', defaultCol: 'grid-essenciais',
+    matchProfile: {
+      kael: 'O plano base corporativo já te atende com perfeição e garante acomodação em apartamento caso você precise.',
+      sam: 'Sua família fica 100% segura. O plano base já garante quarto em apartamento e cobertura completa.',
+      ren: 'Todos os seus exames de rotina estão cobertos. E você não precisa gastar pontos para ter um quarto particular.',
+      ale: 'Eficiência e proteção. A categoria base não exige aporte de pontos e já entrega internação em apartamento.'
+    },
+    quickPills: [
+      { text: 'Como liberar pontos?', intent: 'downgrade' },
+      { text: '✨ Como proteger meus pais?', crossBenefit: 'avus' }
+    ],
+    intents: { 
+      downgrade: { text: '<strong>Estratégia de Pontos:</strong> Reduzir a categoria do seu plano (após 24 meses) não corta sua cobertura básica, mas libera **Pontos Flexíveis** preciosos direto na sua carteira para gastar com outros benefícios.', triggers: ['downgrade', 'reduzir plano', 'abaixar plano', 'liberar ponto'] }, 
+      upgrade: { text: 'O plano base já garante quarto apartamento! Se mesmo assim quiser um upgrade de rede, exigirá 12 meses de carência e descontará do seu saldo flexível.', triggers: ['upgrade', 'aumentar plano', 'carência', 'carencia', 'quarto', 'apartamento'] },
+      dependentes: { text: 'O Bradesco/Unimed aceita apenas cônjuges e filhos. Para colocar os pais e agregados sob um guarda-chuva de saúde, utilize o **Avus Família**.', triggers: ['dependente', 'filho', 'esposa', 'marido'] }
+    },
+    keywords: ['saude', 'saúde', 'medico', 'médico', 'hospital', 'bradesco', 'unimed']
+  },
+  odonto: { 
+    id: 'odonto', name: 'Plano Odonto', icon: '<i class="ph ph-tooth"></i>', badge: 'Obrigatório', short: 'Cobertura dental Essencial Plus.', defaultCol: 'grid-essenciais',
+    matchProfile: { kael: 'Custo-benefício excelente. Mantém a prevenção em dia sem pesar na conta.', sam: 'A cobertura Essencial protege a família toda de forma barata.', ren: 'Prevenção básica e constante faz parte da sua rotina de bem-estar.', ale: 'Cobertura direta sem complicações para manter tudo em ordem.' }, 
+    quickPills: [
+      { text: 'Posso incluir pais/irmãos?', intent: 'dependentes' },
+      { text: '✨ Sobrou pontos? Guarde-os!', crossBenefit: 'carteiraflex' }
+    ], 
+    intents: { 
+      dependentes: { text: 'Diferente da Saúde, aqui você PODE usar seus Pontos Flexíveis para adicionar e pagar o plano de pais e irmãos como agregados!', triggers: ['dependente odonto', 'pai no odonto', 'irmão', 'irmao', 'dentista pais'] }
+    }, keywords: ['odonto', 'dentista', 'dente', 'aparelho'] 
+  },
+  vida: { 
+    id: 'vida', name: 'Seguro de Vida', icon: '<i class="ph ph-shield-heart"></i>', badge: 'Obrigatório', short: 'Amparo financeiro garantido.', defaultCol: 'grid-essenciais',
+    matchProfile: { kael: 'Proteção contra fatalidades é aquele benefício que a gente não quer usar, mas a empresa garante para sua paz.', sam: 'A nova assistência funeral para pais que entrou em 2026 tira um peso financeiro enorme do seu planejamento familiar.', ren: 'A base da tranquilidade mental é saber que se algo sair do controle, a proteção existe.', ale: 'Nenhum planejamento patrimonial faz sentido sem uma apólice de vida sólida protegendo a base.' }, 
+    quickPills: [
+      { text: 'Tem assistência pros pais?', intent: 'pais' },
+      { text: '✨ Planejamento patrimonial', crossBenefit: 'stay' }
+    ], 
+    intents: { 
+      pais: { text: 'Em 2026, a apólice foi atualizada e agora assegura ajuda de custo, urna e traslado em caso de falecimento dos pais do funcionário (limite de R$ 3.500).', triggers: ['seguro pai', 'funeral pais', 'morte', 'falecimento'] }
+    }, keywords: ['vida', 'seguro', 'funeral'] 
+  },
+  vavr: { 
+    id: 'vavr', name: 'VA / VR', icon: '<i class="ph ph-bowl-food"></i>', badge: 'Obrigatório', short: 'Alimentação flexível no app.', defaultCol: 'grid-essenciais',
+    matchProfile: { kael: 'Jogue o saldo para o VR pelo app e garanta o almoço e jantar no iFood sem esquentar a cabeça.', sam: 'Mantenha no VA para otimizar e abater os custos altíssimos das compras de mercado da casa.', ren: 'Use a flexibilidade do app do iFood Benefícios para intercalar feira saudável e os lanches da semana.', ale: 'Obrigatório por lei, mas com a praticidade e falta de fricção que a sua rotina exige.' }, 
+    quickPills: [
+      { text: 'Tem prazo pras mudanças?', intent: 'prazos' },
+      { text: '✨ Mais desconto na farmácia?', crossBenefit: 'farmacia' }
+    ], 
+    intents: { 
+      prazos: { text: 'Alterações de saldo no VA/VR feitas durante a janela só passam a valer na recarga do dia 1º de agosto.', triggers: ['prazo va', 'mudar vr', 'recarga', 'quando cai o vr'] }
+    }, keywords: ['va', 'vr', 'alimentação', 'refeição', 'comida', 'ifood', 'mercado'] 
+  },
+  carteiraflex: { 
+    id: 'carteiraflex', name: 'Carteira Flex', icon: '<i class="ph ph-wallet"></i>', badge: 'Estratégico', short: 'Seu saldo para reembolsos.', defaultCol: 'grid-explorar',
+    matchProfile: {
+      kael: 'Você DEVE usar essa carteira. Como Idiomas acabou, jogue os pontos aqui e peça reembolso do curso.',
+      sam: 'Excelente caixa mensal para reembolso de despesas de saúde não cobertas e escolaridade.',
+      ren: 'Reembolse terapias extras, óculos de grau ou ergonomia que fazem parte da sua rotina.',
+      ale: 'A forma mais inteligente de dar liquidez aos seus pontos. Cada 1 ponto vira R$ 1,00 vivo em reembolso.'
+    },
+    quickPills: [
+      { text: 'O que houve com Idiomas?', intent: 'idiomas' },
+      { text: 'Prazo das notas fiscais', intent: 'prazos' }
+    ],
+    intents: { 
+      idiomas: { text: 'A diretriz é clara: O benefício de Idiomas corporativo foi cortado. Direcione seus pontos para a Carteira Flex e submeta o boleto do seu curso lá para ser reembolsado!', triggers: ['idioma', 'inglês', 'ingles', 'espanhol', 'curso de lingua'] }, 
+      prazos: { text: 'Não perca o deadline: Você tem impreterivelmente até o dia **20 de cada mês** para lançar as notas fiscais no sistema.', triggers: ['nota fiscal', 'prazo nota', 'enviar comprovante', 'dia 20'] }
+    }, keywords: ['carteira', 'flex', 'reembolso', 'educação', 'escola']
+  },
+  stay: { 
+    id: 'stay', name: 'Stay Previdência', icon: '<i class="ph ph-piggy-bank"></i>', badge: 'Cashback', short: 'Aporte sem taxa.', defaultCol: 'grid-arriscar',
+    matchProfile: {
+      kael: 'Como é jovem. Os juros compostos são seus melhores amigos. Aportar pontos flexíveis é enriquecer sem esforço.',
+      sam: 'Garanta a estabilidade universitária da família sem precisar tirar dinheiro do seu salário agora.',
+      ren: 'Cuidar da saúde financeira tira o peso da ansiedade de longo prazo. E o iFood bonifica o hábito.',
+      ale: 'Este é o **seu benefício âncora**. Otimização patrimonial livre de taxas abusivas bancárias. Alocação obrigatória.'
+    },
+    quickPills: [
+      { text: 'Qual o valor do Cashback?', intent: 'cashback' },
+      { text: 'Aportar com pontos flex', intent: 'flex' }
+    ],
+    intents: { 
+      flex: { text: 'Estratégia de Ouro: Sobrou ponto na eleição? Jogue tudo para aportar na previdência sem tocar no seu holerite.', triggers: ['aportar pontos', 'pontos na previdencia', 'sobra de pontos previdencia'] }, 
+      cashback: { text: 'A empresa estimula sua constância financeira: Ganhe 10% de cashback sobre o aporte no 1º mês, +10% no 3º mês consecutivo e +15% no 6º mês (limitado a R$ 50).', triggers: ['cashback', 'bônus', 'bonus previdencia', 'recompensa'] }
+    }, keywords: ['stay', 'previdência', 'previdencia', 'investir', 'dinheiro', 'aposentadoria']
+  },
+  avus: { 
+    id: 'avus', name: 'Avus Família', icon: '<i class="ph ph-users-three"></i>', badge: 'Especial Pais', short: 'Saúde para agregados.', defaultCol: 'grid-explorar',
+    matchProfile: {
+      kael: 'Proteja seus pais à distância com um custo baixíssimo e evite surpresas médicas.',
+      sam: 'Este é **essencial para o seu perfil**! É a única forma de abrigar pais e sogros na nossa estrutura de saúde.',
+      ren: 'Garante atendimento rápido e descontos absurdos de 80% em farmácias preventivas.',
+      ale: 'Pague um valor fixo e cubra a família estendida inteira sem a burocracia de planos de mercado.'
+    },
+    quickPills: [
+      { text: 'Tem cobertura de exames?', intent: 'pais' },
+      { text: '✨ Cobrir o dentista deles?', crossBenefit: 'odonto' }
+    ],
+    intents: { 
+      pais: { text: 'Aceita tranquilamente pais, mães, sogros e irmãos com acesso a telemedicina 24h e farmácias sem carência.', triggers: ['pai', 'mãe', 'mae', 'sogro', 'sogra', 'agregados', 'incluir mae', 'incluir pai'] }
+    }, keywords: ['avus', 'telemedicina', 'consulta online'] 
+  },
+  wellhub: { 
+    id: 'wellhub', name: 'Wellhub', icon: '<i class="ph ph-barbell"></i>', badge: '', short: 'Antigo Gympass.', defaultCol: 'grid-explorar',
+    matchProfile: { kael: 'A atividade física é o melhor hack de produtividade para focar na carreira.', sam: 'Permite incluir dependentes diretos para a família toda se manter ativa.', ren: 'Este é **seu benefício central**. O alicerce direto da sua saúde física e mental.', ale: 'Forma desburocratizada de treinar onde estiver viajando ou morando.' }, 
+    quickPills: [
+      { text: '✨ E a cultura/lazer?', crossBenefit: 'cultura' }
+    ], intents: {}, keywords: ['wellhub', 'gympass', 'academia', 'musculação', 'exercício', 'saude mental'] 
+  },
+  meupet: { 
+    id: 'meupet', name: 'Meu Pet Club', icon: '<i class="ph ph-paw-print"></i>', badge: 'Ação Urgente', short: 'Cobertura veterinária.', defaultCol: 'grid-explorar',
+    matchProfile: { kael: 'Seu parceiro de rotina protegido contra imprevistos caros.', sam: 'Cuidado extra pro bichinho das crianças.', ren: 'Proteção para quem te traz equilíbrio todos os dias.', ale: 'Evita sustos financeiros altos em urgências veterinárias.' }, 
+    quickPills: [
+      { text: 'O plano Emergencial sumiu?', intent: 'emergencial' },
+      { text: '✨ Vacinas na Carteira Flex?', crossBenefit: 'carteiraflex' }
+    ], 
+    intents: { 
+      emergencial: { text: 'O plano Emergencial foi descontinuado! Você deve migrar para os planos Basic, Plus ou Total agora durante a eleição.', triggers: ['emergencial', 'plano antigo pet', 'acabou o emergencial'] }
+    }, keywords: ['pet', 'cachorro', 'gato', 'veterinario', 'meu pet club'] 
+  },
+  leggal: { 
+    id: 'leggal', name: 'Leggal Jurídico', icon: '<i class="ph ph-scales"></i>', badge: 'Grátis', short: 'Advogados corporativos sem custo.', defaultCol: 'grid-arriscar',
+    matchProfile: { kael: 'Revise contratos de locação do seu apartamento novo de graça.', sam: 'Apoio especializado em direitos imobiliários e consumidor.', ren: 'Jogue as burocracias para eles e foque na sua paz de espírito.', ale: 'Consultoria VIP gratuita (ROI altíssimo). A adesão hoje é 0%, aproveite.' }, 
+    quickPills: [
+      { text: 'Qual o custo em pontos?', intent: 'flex' },
+      { text: '✨ Proteger o patrimônio', crossBenefit: 'stay' }
+    ], 
+    intents: { 
+      flex: { text: 'A melhor parte: O Leggal não consome NENHUM Ponto Flexível seu. É 100% gratuito e pago pelo iFood.', triggers: ['custo leggal', 'pontos leggal', 'desconto leggal', 'pagar advogado'] }
+    }, keywords: ['leggal', 'advogado', 'juridico', 'contrato', 'aluguel', 'divórcio'] 
+  },
+  cultura: {
+    id: 'cultura', name: 'Vale Cultura', icon: '<i class="ph ph-ticket"></i>', badge: '', short: 'Lazer e apps (R$ 50).', defaultCol: 'grid-explorar',
+    matchProfile: { kael: 'R$ 50 garantidos pra você assinar seu Spotify ou Netflix sem gastar do bolso.', sam: 'Ideal para comprar livros para as crianças ou pagar o streaming de casa.', ren: 'Consumir arte e cultura é fundamental para o seu estilo de vida balanceado.', ale: 'R$ 50 reais de isenção que não pesam na folha para manter as assinaturas ativas.' },
+    quickPills: [{ text: 'Posso mudar o valor?', intent: 'fixo' }],
+    intents: { fixo: { text: 'Não! O valor é **fixo em R$ 50,00** (50 pontos). Por lei, não é possível alocar um valor diferente neste benefício.', triggers: ['aumentar cultura', 'valor cultura', 'mudar cultura', 'mais de 50'] } }, 
+    keywords: ['cultura', 'netflix', 'spotify', 'livro', 'cinema']
+  },
+  farmacia: {
+    id: 'farmacia', name: 'Auxílio Farmácia', icon: '<i class="ph ph-pill"></i>', badge: '', short: 'Descontos em medicamentos.', defaultCol: 'grid-arriscar',
+    matchProfile: { kael: 'Tenha sempre um fundo para remédios básicos de rotina.', sam: 'Com filhos, gastos de farmácia são recorrentes. Alocar pontos aqui economiza seu salário real.', ren: 'Mantenha suas vitaminas e suplementos em dia usando o saldo do cartão farmácia.', ale: 'Uma gestão de despesas previsível e barata.' },
+    quickPills: [
+      { text: 'Posso descontar em folha?', intent: 'desconto' },
+      { text: '✨ Sobrou ponto no Saúde?', crossBenefit: 'saude' }
+    ],
+    intents: { desconto: { text: 'Atenção: O Auxílio Farmácia **NÃO permite** desconto em folha. Você só pode contratá-lo se tiver Pontos Flexíveis sobrando!', triggers: ['desconto farmacia', 'folha farmacia'] } }, 
+    keywords: ['farmacia', 'farmácia', 'remédio', 'remedio', 'medicamento']
+  },
+  mobilidade: {
+    id: 'mobilidade', name: 'Mobilidade Flex', icon: '<i class="ph ph-car-profile"></i>', badge: '', short: 'Combustível ou apps.', defaultCol: 'grid-explorar',
+    matchProfile: { kael: 'Garanta o saldo de Uber para o fim de semana ou pro escritório.', sam: 'Abasteça o carro da família usando pontos e poupe seu salário líquido.', ren: 'Use o saldo para locomoção de forma confortável e segura.', ale: 'Solução perfeita para quem quer converter pontos diretos em combustível.' },
+    quickPills: [{ text: '✨ Pontos no VA/VR?', crossBenefit: 'vavr' }],
+    intents: {}, keywords: ['mobilidade', 'carro', 'uber', 'combustível', 'gasolina']
+  }
+};
+
+const intentKeywords = { downgrade: ['downgrade', 'reduzir'], upgrade: ['upgrade', 'aumentar', 'carência'], flex: ['pontos', 'flex', 'flexível'], prazos: ['prazo', 'eleição', 'nota'], desconto: ['desconto', 'folha'], pais: ['pai', 'mãe', 'sogro'], dependentes: ['dependente', 'filho', 'esposa', 'irmão', 'irmao'], idiomas: ['idioma', 'inglês', 'espanhol'], emergencial: ['emergencial'], cashback: ['cashback', 'bônus'], fixo: ['fixo', 'mudar o valor'] };
+
+let userProfile = null; let hasPet = false;
+
+const chatBox = document.getElementById('chat-box');
+const inputBar = document.getElementById('chat-input-bar');
+const mainInput = document.getElementById('main-input');
+
+mainInput.addEventListener('keypress', function (e) { if (e.key === 'Enter') handleTextInput(); });
+
+function appendBotMsg(html) { const div = document.createElement('div'); div.className = 'msg msg-bot'; div.innerHTML = `<div class="bubble">${html}</div>`; chatBox.appendChild(div); scrollToBottom(); }
+function appendUserMsg(text) { const div = document.createElement('div'); div.className = 'msg msg-user'; div.innerHTML = `<div class="bubble">${text}</div>`; chatBox.appendChild(div); scrollToBottom(); }
+function scrollToBottom() { chatBox.scrollTo({ top: chatBox.scrollHeight, behavior: 'smooth' }); }
+
+function initFlow() {
+  setTimeout(() => {
+    appendBotMsg('Oi! Sou o Benício. Analisei as regras do programa para te apresentar as melhores opções focadas no seu momento.');
+    setTimeout(() => {
+      appendBotMsg('Para começarmos, qual destas fases te descreve melhor?');
+      showOptions([
+        { text: 'Foco na carreira e desenvolvimento', action: () => handleChoice('kael', 'Foco na carreira e independência') },
+        { text: 'Prioridade absoluta na família', action: () => handleChoice('sam', 'Prioridade na família') },
+        { text: 'Cuidar do bem-estar físico e mental', action: () => handleChoice('ren', 'Manter saúde mental e física') },
+        { text: 'Otimização patrimonial e finanças', action: () => handleChoice('ale', 'Organizar finanças') }
+      ]);
+    }, 800);
+  }, 400);
+}
+
+function showOptions(options) {
+  const container = document.createElement('div'); container.className = 'options-container msg msg-bot';
+  options.forEach(opt => {
+    const btn = document.createElement('button'); btn.className = 'btn-option'; btn.innerText = opt.text;
+    btn.onclick = () => { container.remove(); opt.action(); }; container.appendChild(btn);
+  });
+  chatBox.appendChild(container); scrollToBottom();
+}
+
+function handleChoice(profileKey, text) {
+  appendUserMsg(text); userProfile = profileKey;
+  setTimeout(() => {
+    appendBotMsg('Anotado. Você tem algum pet na família? 🐾');
+    showOptions([
+      { text: 'Sim, tenho', action: () => finishOnboarding(true, 'Sim, tenho pet') },
+      { text: 'Não', action: () => finishOnboarding(false, 'Não tenho') }
+    ]);
+  }, 600);
+}
+
+function finishOnboarding(petState, text) {
+  appendUserMsg(text); hasPet = petState;
+  setTimeout(() => {
+    appendBotMsg('Alinhando a base obrigatória às oportunidades do seu perfil...');
+    setTimeout(() => { transitionToDashboard(); }, 1200);
+  }, 400);
+}
+
+function transitionToDashboard() {
+  document.getElementById('chat-area').classList.add('sidebar-mode');
+  document.getElementById('proposal-area').style.display = 'block';
+  inputBar.classList.add('active'); 
+  generateProposalGrid();
+
+  appendBotMsg('**Tudo pronto!** <br><br>Garantimos a **Base Essencial Obrigatória** e preparamos outras novidades. Para interagir com as conexões ocultas, basta clicar nas **Pílulas Mágicas (✨)** dentro dos cards! <br><br>Pode me perguntar sobre regras ou reembolsos aqui.');
+}
+
+function generateProposalGrid() {
+  const profilesMapping = {
+    kael: { essenciais: ['saude', 'odonto', 'vida', 'vavr'], explorar: ['carteiraflex', 'wellhub', 'cultura', 'mobilidade'], arriscar: ['stay', 'leggal', 'farmacia'] },
+    sam: { essenciais: ['saude', 'odonto', 'vida', 'vavr'], explorar: ['avus', 'carteiraflex', 'farmacia'], arriscar: ['stay', 'leggal', 'cultura'] },
+    ren: { essenciais: ['saude', 'odonto', 'vida', 'vavr'], explorar: ['wellhub', 'carteiraflex', 'cultura', 'mobilidade'], arriscar: ['stay', 'avus', 'leggal'] },
+    ale: { essenciais: ['saude', 'odonto', 'vida', 'vavr'], explorar: ['stay', 'avus', 'wellhub', 'carteiraflex'], arriscar: ['leggal', 'mobilidade', 'farmacia'] }
+  };
+  
+  const map = JSON.parse(JSON.stringify(profilesMapping[userProfile])); 
+  if (hasPet) map.explorar.push('meupet');
+
+  renderGridColumn('grid-essenciais', map.essenciais);
+  renderGridColumn('grid-explorar', map.explorar);
+  renderGridColumn('grid-arriscar', map.arriscar);
+}
+
+function renderGridColumn(containerId, keysArray) {
+  const container = document.getElementById(containerId); container.innerHTML = '';
+  keysArray.forEach(k => { injectCardHTML(k, container); });
+}
+
+function injectCardHTML(benefitId, container) {
+  const b = benefitsDB[benefitId]; if(!b) return;
+  if(document.getElementById(`card-${benefitId}`)) return;
+
+  const card = document.createElement('div'); card.className = 'benefit-card'; card.id = `card-${benefitId}`;
+  card.onclick = () => openCardWithContext(benefitId, null, false);
+
+  let badgeClass = b.badge === 'Obrigatório' ? 'badge-compulsory' : (b.badge.includes('Atenção') || b.badge.includes('Urgente') ? 'badge-alert' : (b.badge === 'Especial Pais' ? 'badge-special' : 'badge-highlight'));
+  let badgeHtml = b.badge ? `<span class="badge ${badgeClass}">${b.badge}</span>` : '';
+
+  let pillsHtml = '';
+  if (b.quickPills && b.quickPills.length > 0) {
+    pillsHtml = '<div class="quick-pills">';
+    b.quickPills.forEach(pill => { 
+      if(pill.crossBenefit) {
+        pillsHtml += `<button class="pill cross-sell" onclick="event.stopPropagation(); triggerCrossSell('${pill.text}', '${pill.crossBenefit}')">${pill.text}</button>`; 
+      } else {
+        pillsHtml += `<button class="pill" onclick="event.stopPropagation(); triggerPill('${pill.text}', '${benefitId}', '${pill.intent}')">${pill.text}</button>`; 
+      }
+    });
+    pillsHtml += '</div>';
+  }
+
+  card.innerHTML = `
+    ${badgeHtml}
+    <div class="b-header">
+      <div class="b-icon-wrapper">${b.icon}</div>
+      <div class="b-info">
+        <div class="b-title">${b.name}</div>
+        <div class="b-short">${b.short}</div>
+      </div>
+    </div>
+    
+    <div class="b-expanded-content">
+      <div class="match-box">
+        <div class="match-title">✨ Por que sugerimos isso?</div>
+        ${b.matchProfile[userProfile]}
+      </div>
+      <div class="dynamic-view" id="dynamic-${benefitId}"></div>
+      ${pillsHtml}
+    </div>
+  `;
+  container.appendChild(card);
+}
+
+// MÁGICA DO CROSS-SELL
+function triggerCrossSell(text, targetBenefitId) {
+  appendUserMsg(text);
+  setTimeout(() => {
+    appendBotMsg(`**Excelente ponto! 🪄** <br>Acabei de invocar o card oficial do **${benefitsDB[targetBenefitId].name}** direto para o seu painel!`);
+    openCardWithContext(targetBenefitId, null, true);
+  }, 600);
+}
+
+function triggerPill(text, benefitId, intentKey) {
+  appendUserMsg(text);
+  setTimeout(() => { openCardWithContext(benefitId, intentKey, true); }, 600);
+}
+
+function openCardWithContext(benefitId, intentKey = null, triggeredByChat = true) {
+  const b = benefitsDB[benefitId]; 
+  
+  let cardElement = document.getElementById(`card-${benefitId}`);
+  if (!cardElement) {
+    const col = document.getElementById(b.defaultCol);
+    injectCardHTML(benefitId, col);
+    cardElement = document.getElementById(`card-${benefitId}`);
+    if(!triggeredByChat) {
+        appendBotMsg(`Adicionei o card do **${b.name}** à tela para você.`);
+    }
+  }
+
+  document.querySelectorAll('.benefit-card.open').forEach(c => {
+    if(c.id !== `card-${benefitId}`) c.classList.remove('open');
+  });
+
+  const dynamicView = document.getElementById(`dynamic-${benefitId}`);
+  dynamicView.className = 'dynamic-view'; 
+  
+  if (intentKey && b.intents[intentKey]) {
+    dynamicView.innerHTML = `<div class="dynamic-header">⚡ BENÍCIO RESPONDE:</div>${b.intents[intentKey].text}`;
+    dynamicView.classList.add('active'); 
+  } else {
+    dynamicView.classList.remove('active'); 
+  }
+
+  cardElement.classList.add('open');
+  cardElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+  if (triggeredByChat && intentKey) {
+    appendBotMsg(`Destaquei a resposta no card do **${b.name}**!`);
+  } else if (!triggeredByChat) {
+    appendBotMsg(`Você está explorando o **${b.name}**. Clique nas perguntas dentro do card para saber as regras ou encontrar novos benefícios conexos!`);
+  }
+}
+
+function handleTextInput() {
+  const rawVal = mainInput.value.trim(); const val = rawVal.toLowerCase(); if(!val) return;
+  appendUserMsg(rawVal); mainInput.value = '';
+
+  let detectedIntent = null; let targetBenefitId = null;
+
+  for (const [bId, bData] of Object.entries(benefitsDB)) {
+    if (bData.intents) {
+      for (const [iKey, iData] of Object.entries(bData.intents)) {
+        if (iData.triggers && iData.triggers.some(t => val.includes(t))) {
+          targetBenefitId = bId;
+          detectedIntent = iKey;
+          break;
+        }
+      }
+    }
+    if (targetBenefitId) break;
+  }
+
+  if (!targetBenefitId) {
+    for (const [bId, bData] of Object.entries(benefitsDB)) {
+      if (bData.keywords && bData.keywords.some(k => val.includes(k))) {
+        targetBenefitId = bId;
+        break;
+      }
+    }
+  }
+
+  setTimeout(() => {
+    if (val.includes('desconto') || val.includes('folha')) {
+      appendBotMsg(`**Desconto em Folha:** Se a soma das suas escolhas ultrapassar seu saldo de pontos, o excedente é descontado no salário. Mas fique tranquilo: há uma trava de segurança do RH de até **15% do seu salário base** para proteger sua renda!`);
+      return;
+    }
+
+    if (targetBenefitId) {
+      openCardWithContext(targetBenefitId, detectedIntent, true);
+    } else {
+      appendBotMsg(`Confesso que não encontrei uma regra exata para "${rawVal}". Tente usar palavras-chave como **carência, pais, reembolso, cashback, inglês ou vacina**!`);
+    }
+  }, 600);
+}
+
+window.onload = initFlow;
+</script>
+</body>
+</html>
