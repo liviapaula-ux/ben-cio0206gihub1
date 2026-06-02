@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Benício - Concierge iFood</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<!-- Biblioteca de ícones vetoriais para padrão iFood -->
+<!-- Biblioteca de ícones vetoriais -->
 <script src="https://unpkg.com/@phosphor-icons/web"></script>
 <style>
 :root {
@@ -47,7 +47,6 @@ body { font-family: 'Inter', sans-serif; background: var(--bg-app); color: var(-
 .benefit-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.06); border-color: rgba(234, 29, 44, 0.3); }
 .benefit-card.open { border-color: var(--ifood-red); box-shadow: 0 6px 20px rgba(234, 29, 44, 0.12); transform: translateY(0); padding-bottom: 16px; }
 
-/* ÍCONES PADRÃO IFOOD (Branco e Vermelho) */
 .b-header { display: flex; align-items: center; gap: 12px; }
 .b-icon-wrapper { 
   background: #ffffff; color: var(--ifood-red); border: 1.5px solid #fecdd3;
@@ -55,19 +54,26 @@ body { font-family: 'Inter', sans-serif; background: var(--bg-app); color: var(-
   display: flex; align-items: center; justify-content: center; font-size: 24px; 
   transition: all 0.3s; flex-shrink: 0;
 }
-/* Inversão de cores ao abrir o card */
 .benefit-card.open .b-icon-wrapper { transform: scale(1.05); background: var(--ifood-red); color: #ffffff; border-color: var(--ifood-red); }
 
-.b-info { flex: 1; min-width: 0; }
-.b-title { font-size: 13.5px; font-weight: 700; color: #0f172a; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 45px; }
+.b-info { flex: 1; min-width: 0; padding-top: 6px; } 
+.b-title { font-size: 13.5px; font-weight: 700; color: #0f172a; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 20px; }
 .b-short { font-size: 11.5px; color: var(--text-muted); line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-/* BADGES MANTIDOS COMO INDICADORES DISCRETOS */
-.badge { position: absolute; top: 12px; right: 12px; font-size: 8.5px; font-weight: 800; padding: 3px 6px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.05em; }
-.badge-highlight { background: #ffe4e6; color: #e11d48; }
-.badge-alert { background: #fef3c7; color: #d97706; }
-.badge-special { background: #e0e7ff; color: #4338ca; }
-.badge-compulsory { background: #e2e8f0; color: #475569; }
+/* BADGES (TAGS) E ANIMAÇÃO PISCANTE */
+.badge { 
+  position: absolute; top: 12px; right: 12px; font-size: 8px; font-weight: 800; 
+  padding: 3px 6px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.05em; 
+  animation: pulseBadge 1.5s infinite;
+}
+.badge-novidade { background: #ffe4e6; color: #e11d48; border: 1px solid #fecdd3; }
+.badge-mudanca { background: #fef3c7; color: #d97706; border: 1px solid #fde68a; }
+
+@keyframes pulseBadge {
+  0% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.02); }
+  100% { opacity: 1; transform: scale(1); }
+}
 
 /* INTERIOR DO CARD */
 .b-expanded-content { display: none; margin-top: 14px; font-size: 12.5px; color: #334155; line-height: 1.5; border-top: 1px dashed var(--border-color); padding-top: 14px; }
@@ -82,12 +88,14 @@ body { font-family: 'Inter', sans-serif; background: var(--bg-app); color: var(-
 @keyframes flashHighlight { 0% { background-color: #fecdd3; } 100% { background-color: #fff1f2; } }
 .dynamic-header { font-weight: 800; color: var(--ifood-red); margin-bottom: 4px; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.05em; }
 
-/* Quick Pills (Sugestões rápidas) */
+/* Quick Pills */
 .quick-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
 .pill { background: #f1f5f9; border: 1px solid #e2e8f0; color: #475569; padding: 5px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
 .pill:hover { background: #e2e8f0; color: var(--ifood-red); border-color: #cbd5e1; }
 .pill.cross-sell { background: #fffbeb; color: #b45309; border-color: #fde68a; }
 .pill.cross-sell:hover { background: #fef3c7; border-color: #fcd34d; color: #d97706; }
+.pill.gold { background: #fef9c3; color: #92400e; border-color: #fde047; }
+.pill.gold:hover { background: #fef08a; color: #78350f; border-color: #facc15; }
 
 /* DIREITA: CHAT */
 #chat-area { flex: 1; min-width: 400px; max-width: 800px; margin: 0 auto; background: var(--bg-card); display: flex; flex-direction: column; height: 100vh; transition: all 0.3s ease; border-left: 1px solid var(--border-color); }
@@ -125,7 +133,7 @@ body { font-family: 'Inter', sans-serif; background: var(--bg-app); color: var(-
   <div id="proposal-area">
     <div class="header-compact">
       <h1>Seu Ecossistema iFood</h1>
-      <p>Organizamos as sugestões em pilares estratégicos. Clique nos cards e use os botões com ✨ para descobrir como conectar seus benefícios.</p>
+      <p>Organizamos as sugestões em pilares estratégicos. Clique nos cards e use os botões com ✨ para descobrir conexões e 🏆 para a Dica de Ouro.</p>
     </div>
     <div class="proposal-grid">
       <div class="col-category col-essenciais"><div class="col-header"><i class="ph-fill ph-circle"></i> Benefícios essenciais para você</div><div id="grid-essenciais"></div></div>
@@ -149,62 +157,109 @@ body { font-family: 'Inter', sans-serif; background: var(--bg-app); color: var(-
 </div>
 
 <script>
-// --- BANCO DE DADOS ATUALIZADO COM ÍCONES PHOSPHOR ---
+// --- BANCO DE DADOS ATUALIZADO ---
 const benefitsDB = {
   saude: { 
-    id: 'saude', name: 'Plano de Saúde', icon: '<i class="ph ph-first-aid-kit"></i>', badge: 'Obrigatório', short: 'Sua cobertura Bradesco / Unimed.', defaultCol: 'grid-essenciais',
+    id: 'saude', name: 'Plano de Saúde', icon: '<i class="ph ph-first-aid-kit"></i>', badge: '', short: 'Sua cobertura Bradesco / Unimed.', defaultCol: 'grid-essenciais',
     matchProfile: {
-      kael: 'O plano base corporativo já te atende com perfeição e garante acomodação em apartamento caso você precise.',
+      kael: 'A operadora é definida na admissão. O plano base já te atende com perfeição e garante acomodação em apartamento caso você precise.',
       sam: 'Sua família fica 100% segura. O plano base já garante quarto em apartamento e cobertura completa.',
-      ren: 'Todos os seus exames de rotina estão cobertos. E você não precisa gastar pontos para ter um quarto particular.',
-      ale: 'Eficiência e proteção. A categoria base não exige aporte de pontos e já entrega internação em apartamento.'
+      ren: 'Todos os seus exames de rotina estão cobertos na nossa rede credenciada de forma ágil e segura.',
+      ale: 'Eficiência e proteção. A categoria base não exige aporte extra de pontos e já entrega internação em apartamento.'
     },
     quickPills: [
       { text: 'Como liberar pontos?', intent: 'downgrade' },
-      { text: '✨ Como proteger meus pais?', crossBenefit: 'avus' }
+      { text: '✨ Como proteger meus pais?', crossBenefit: 'avus' },
+      { text: '🏆 Dica de Ouro do Benício', intent: 'dicaouro' }
     ],
-    intents: { 
-      downgrade: { text: '<strong>Estratégia de Pontos:</strong> Reduzir a categoria do seu plano (após 24 meses) não corta sua cobertura básica, mas libera **Pontos Flexíveis** preciosos direto na sua carteira para gastar com outros benefícios.', triggers: ['downgrade', 'reduzir plano', 'abaixar plano', 'liberar ponto'] }, 
-      upgrade: { text: 'O plano base já garante quarto apartamento! Se mesmo assim quiser um upgrade de rede, exigirá 12 meses de carência e descontará do seu saldo flexível.', triggers: ['upgrade', 'aumentar plano', 'carência', 'carencia', 'quarto', 'apartamento'] },
-      dependentes: { text: 'O Bradesco/Unimed aceita apenas cônjuges e filhos. Para colocar os pais e agregados sob um guarda-chuva de saúde, utilize o **Avus Família**.', triggers: ['dependente', 'filho', 'esposa', 'marido'] }
+    dicaOuro: {
+      kael: '<strong>Use a Rede a seu favor:</strong> Lembre-se, não é possível trocar a operadora do seu plano (Bradesco ↔ Unimed), mas você pode avaliar os planos disponíveis dentro da sua operadora ativa. Antes de buscar clínicas particulares, consulte nossos parceiros na sua cidade e poupe seu dinheiro: <br><br>🏥 <a href="https://liviapaula-ux.github.io/consultaredesaude/" target="_blank" style="color:var(--ifood-red); font-weight:600; text-decoration:underline;">Consultar Rede de Saúde ↗</a>',
+      sam: '<strong>A inteligência de usar a Rede Credenciada:</strong> Você não pode alterar sua operadora (Bradesco ↔ Unimed), mas pode navegar entre os planos dela. Encontre os melhores pediatras e hospitais credenciados perto de você e evite a dor de cabeça de reembolsos: <br><br>🏥 <a href="https://liviapaula-ux.github.io/consultaredesaude/" target="_blank" style="color:var(--ifood-red); font-weight:600; text-decoration:underline;">Consultar Rede de Saúde ↗</a>',
+      ren: '<strong>Constância na Prevenção:</strong> A troca de operadora é bloqueada, mas você é livre para avaliar planos dentro da operadora ativa. Mantenha seus exames em dia focando na nossa ampla rede credenciada e mantenha sua saúde sem atritos financeiros. Compare as opções na sua cidade aqui: <br><br>🏥 <a href="https://liviapaula-ux.github.io/consultaredesaude/" target="_blank" style="color:var(--ifood-red); font-weight:600; text-decoration:underline;">Consultar Rede de Saúde ↗</a>',
+      ale: '<strong>Gestão de Patrimônio e Saúde:</strong> A regra é clara: não é possível trocar a operadora, mas você deve avaliar o plano dentro da sua operadora atual. Otimize seus recursos utilizando médicos e hospitais credenciados. Valide suas preferências na sua cidade antes de qualquer decisão: <br><br>🏥 <a href="https://liviapaula-ux.github.io/consultaredesaude/" target="_blank" style="color:var(--ifood-red); font-weight:600; text-decoration:underline;">Consultar Rede de Saúde ↗</a>'
     },
-    keywords: ['saude', 'saúde', 'medico', 'médico', 'hospital', 'bradesco', 'unimed']
+    intents: { 
+      downgrade: { text: '<strong>Apenas por Downgrade:</strong> Para liberar pontos flexíveis na sua carteira, você pode reduzir a categoria do seu plano atual (isso exige 24 meses de permanência).', triggers: ['downgrade', 'reduzir plano', 'abaixar plano', 'liberar ponto', 'liberar pontos'] }, 
+      dependentes: { text: '<strong>Eles não entram neste plano:</strong> O Bradesco e Unimed corporativos não aceitam pais, mães ou sogros (apenas cônjuges e filhos legais). Para dar cobertura de qualidade a eles, utilize nossa plataforma dedicada: o <strong>Avus Família</strong>.', triggers: ['dependente', 'filho', 'esposa', 'marido', 'pai no plano', 'mae no plano', 'mãe no plano', 'sogro'] },
+      rede: { text: 'Explore nossa Rede Credenciada! Lembre-se: não é possível trocar a operadora (Bradesco ↔ Unimed), mas você pode avaliar planos da sua operadora. <br><br>🏥 <a href="https://liviapaula-ux.github.io/consultaredesaude/" target="_blank" style="color:var(--ifood-red); font-weight:600; text-decoration:underline;">Consultar Rede de Saúde ↗</a>', triggers: ['rede', 'hospitais', 'hospital', 'credenciada', 'link', 'comparar', 'cidade'] }
+    },
+    keywords: ['saude', 'saúde', 'medico', 'médico', 'hospital', 'bradesco', 'unimed', 'rede credenciada']
   },
   odonto: { 
-    id: 'odonto', name: 'Plano Odonto', icon: '<i class="ph ph-tooth"></i>', badge: 'Obrigatório', short: 'Cobertura dental Essencial Plus.', defaultCol: 'grid-essenciais',
-    matchProfile: { kael: 'Custo-benefício excelente. Mantém a prevenção em dia sem pesar na conta.', sam: 'A cobertura Essencial protege a família toda de forma barata.', ren: 'Prevenção básica e constante faz parte da sua rotina de bem-estar.', ale: 'Cobertura direta sem complicações para manter tudo em ordem.' }, 
+    id: 'odonto', name: 'Plano Odonto', icon: '<i class="ph ph-tooth"></i>', badge: '', short: 'Proteção bucal completa.', defaultCol: 'grid-essenciais',
+    matchProfile: { 
+      kael: 'O plano base garante sua prevenção sem pesar na conta. O grande diferencial aqui é poder **incluir pai, mãe e irmãos** no plano usando apenas seus pontos flexíveis!', 
+      sam: 'Proteção total! Fazer o upgrade para o **Essencial Top** garante aparelho ortodôntico para os filhos. E o melhor: você pode estender a cobertura para **pai, mãe e irmãos**!', 
+      ren: 'Saúde bucal é pilar do bem-estar. Considere o upgrade para o **Complete White** (clareamento e próteses). Além disso, você pode cuidar da família estendida incluindo **pai, mãe e irmãos**.', 
+      ale: 'A cobertura básica previne sustos financeiros. Use seus pontos com inteligência para incluir **pai, mãe e irmãos** no benefício, garantindo a saúde deles sem tirar dinheiro do bolso.' 
+    }, 
     quickPills: [
+      { text: 'Diferença dos planos', intent: 'planos' },
       { text: 'Posso incluir pais/irmãos?', intent: 'dependentes' },
-      { text: '✨ Sobrou pontos? Guarde-os!', crossBenefit: 'carteiraflex' }
+      { text: '🏆 Dica de Ouro do Benício', intent: 'dicaouro' }
     ], 
+    dicaOuro: {
+      kael: '<strong>Atendimento Móvel Bradesco Dental:</strong> Sabia que toda terça-feira temos uma unidade móvel no escritório de Osasco? É perfeito para fazer seus cuidados essenciais sem precisar se deslocar ou gastar horas da sua rotina. <br><br>👉 <a href="https://calendar.app.google/UGQSbrPBd6FNz7gTA" target="_blank" style="color:var(--ifood-red); font-weight:600; text-decoration:underline;">Agendar Atendimento Móvel ↗</a>',
+      sam: '<strong>Atendimento Móvel Bradesco Dental:</strong> Otimize seu tempo! Sabia que toda terça-feira temos uma unidade móvel no escritório de Osasco? Você faz seus cuidados essenciais diretamente no local de trabalho e poupa tempo para focar na sua família. <br><br>👉 <a href="https://calendar.app.google/UGQSbrPBd6FNz7gTA" target="_blank" style="color:var(--ifood-red); font-weight:600; text-decoration:underline;">Agendar Atendimento Móvel ↗</a>',
+      ren: '<strong>Atendimento Móvel Bradesco Dental:</strong> Integrar a saúde à sua rotina ficou mais fácil. Toda terça-feira temos uma unidade móvel no escritório de Osasco, oferecendo cuidados odontológicos essenciais diretamente no local para não prejudicar seu ritmo de bem-estar. <br><br>👉 <a href="https://calendar.app.google/UGQSbrPBd6FNz7gTA" target="_blank" style="color:var(--ifood-red); font-weight:600; text-decoration:underline;">Agendar Atendimento Móvel ↗</a>',
+      ale: '<strong>Atendimento Móvel Bradesco Dental:</strong> Eficiência na gestão do seu tempo. Toda terça-feira temos uma unidade móvel no escritório de Osasco. Resolva seus cuidados odontológicos essenciais no próprio local de trabalho e siga com sua agenda. <br><br>👉 <a href="https://calendar.app.google/UGQSbrPBd6FNz7gTA" target="_blank" style="color:var(--ifood-red); font-weight:600; text-decoration:underline;">Agendar Atendimento Móvel ↗</a>'
+    },
     intents: { 
-      dependentes: { text: 'Diferente da Saúde, aqui você PODE usar seus Pontos Flexíveis para adicionar e pagar o plano de pais e irmãos como agregados!', triggers: ['dependente odonto', 'pai no odonto', 'irmão', 'irmao', 'dentista pais'] }
+      dependentes: { text: 'Diferente da Saúde, aqui você PODE e deve usar seus Pontos Flexíveis para adicionar e pagar o plano de **pais, mães e irmãos** como agregados!', triggers: ['dependente odonto', 'pai no odonto', 'irmão', 'irmao', 'dentista pais'] },
+      planos: { text: '<strong>Diferenças dos Planos:</strong><br><br>• <strong>Essencial Plus (12 pts):</strong> Prevenção, cirurgia, odontopediatria, urgências e próteses.<br>• <strong>Essencial Top (51 pts):</strong> Tudo do Plus + <strong>Ortodontia completa</strong> (instalação e manutenção do aparelho).<br>• <strong>Complete White (80 pts):</strong> Tudo do Top + Próteses completas, Tomografia e Clareamento.', triggers: ['diferença', 'diferenca', 'planos odonto', 'cobertura', 'aparelho', 'ortodontia', 'upgrade odonto'] }
     }, keywords: ['odonto', 'dentista', 'dente', 'aparelho'] 
   },
   vida: { 
-    id: 'vida', name: 'Seguro de Vida', icon: '<i class="ph ph-shield-heart"></i>', badge: 'Obrigatório', short: 'Amparo financeiro garantido.', defaultCol: 'grid-essenciais',
-    matchProfile: { kael: 'Proteção contra fatalidades é aquele benefício que a gente não quer usar, mas a empresa garante para sua paz.', sam: 'A nova assistência funeral para pais que entrou em 2026 tira um peso financeiro enorme do seu planejamento familiar.', ren: 'A base da tranquilidade mental é saber que se algo sair do controle, a proteção existe.', ale: 'Nenhum planejamento patrimonial faz sentido sem uma apólice de vida sólida protegendo a base.' }, 
+    id: 'vida', name: 'Seguro de Vida', icon: '<i class="ph ph-shield-heart"></i>', badge: 'Vem que tem mudança', short: 'Amparo financeiro flexível.', defaultCol: 'grid-essenciais',
+    matchProfile: { 
+      kael: 'A cobertura base (25x o seu salário) não consome seus pontos e já garante a segurança necessária contra imprevistos.', 
+      sam: 'Sua família é sua prioridade. Avaliar um upgrade usando seus pontos para 30x ou 36x garante um futuro financeiro sólido para quem você ama.', 
+      ren: 'Saber que você e os seus estão amparados em cenários de risco traz a paz de espírito necessária para você viver com tranquilidade.', 
+      ale: 'Seguro de vida é sucessão patrimonial inteligente com liquidez imediata. Fazer o upgrade para 36x blinda o padrão de vida dos seus herdeiros.' 
+    }, 
     quickPills: [
-      { text: 'Tem assistência pros pais?', intent: 'pais' },
-      { text: '✨ Planejamento patrimonial', crossBenefit: 'stay' }
+      { text: 'Diferença de 25x, 30x e 36x', intent: 'planos' },
+      { text: 'Assistência pros pais', intent: 'pais' },
+      { text: '🏆 Dica de Ouro do Benício', intent: 'dicaouro' }
     ], 
+    dicaOuro: {
+      kael: '<strong>O Básico que funciona:</strong> O plano base de indenização em 25x já te atende super bem e a empresa paga ele 100% por você. Foque em não gastar seus pontos aqui e use o que sobrar para a Carteira Flex ou para investir em Previdência!',
+      sam: '<strong>Um escudo de amor:</strong> Com família, segurança nunca é demais. Considere usar os pontos flexíveis da sua eleição para fazer o upgrade do seu seguro para 30x ou 36x o seu salário. É o jeito mais barato de garantir uma faculdade ou estrutura para seus filhos caso você falte.',
+      ren: '<strong>Tranquilidade garantida:</strong> A paz de espírito que o Seguro de Vida traz é imensurável. O plano base (25x) não desconta nada de você, mas se tiver dependentes diretos, alocar alguns pontinhos para o upgrade (30x) tira de vez qualquer preocupação financeira sobre o amparo deles.',
+      ale: '<strong>Liquidez de Sucessão:</strong> Você já deve saber disso, mas o Seguro de Vida é um dinheiro que chega à sua família de forma imediata e isento de impostos de sucessão (ITCMD). Fazer o upgrade para o múltiplo máximo (36x o salário) é blindar o seu patrimônio real enquanto eles resolvem inventários.'
+    },
     intents: { 
-      pais: { text: 'Em 2026, a apólice foi atualizada e agora assegura ajuda de custo, urna e traslado em caso de falecimento dos pais do funcionário (limite de R$ 3.500).', triggers: ['seguro pai', 'funeral pais', 'morte', 'falecimento'] }
-    }, keywords: ['vida', 'seguro', 'funeral'] 
+      planos: { text: '<strong>Como funciona o limite de cobertura:</strong> A empresa garante gratuitamente a apólice que indeniza os herdeiros em <strong>25 vezes</strong> o seu salário atual. Se você desejar mais proteção, basta usar seus Pontos Flexíveis durante a eleição para fazer o upgrade da indenização para <strong>30x ou até 36x</strong> o seu salário.', triggers: ['25x', '30x', '36x', 'multiplos', 'múltiplos', 'diferença vida', 'planos vida', 'upgrade vida'] },
+      pais: { text: '<strong>Amparo em momentos difíceis:</strong> Sabemos o quanto é sensível lidar com a perda de um familiar. A apólice foi atualizada e agora inclui uma assistência funeral estendida para pais do colaborador. É uma ajuda de custo que cobre urna e traslado (limitada a R$ 3.500) para trazer um suporte prático quando mais precisamos.', triggers: ['seguro pai', 'funeral pais', 'morte', 'falecimento', 'assistência funeral', 'assistencia funeral', 'pai e mae seguro'] }
+    }, keywords: ['vida', 'seguro', 'funeral', 'sinistro', 'múltiplo', 'herdeiros'] 
   },
   vavr: { 
-    id: 'vavr', name: 'VA / VR', icon: '<i class="ph ph-bowl-food"></i>', badge: 'Obrigatório', short: 'Alimentação flexível no app.', defaultCol: 'grid-essenciais',
-    matchProfile: { kael: 'Jogue o saldo para o VR pelo app e garanta o almoço e jantar no iFood sem esquentar a cabeça.', sam: 'Mantenha no VA para otimizar e abater os custos altíssimos das compras de mercado da casa.', ren: 'Use a flexibilidade do app do iFood Benefícios para intercalar feira saudável e os lanches da semana.', ale: 'Obrigatório por lei, mas com a praticidade e falta de fricção que a sua rotina exige.' }, 
+    id: 'vavr', name: 'VA / VR', icon: '<i class="ph ph-bowl-food"></i>', badge: 'Vem que tem mudança', short: 'Alimentação flexível no app.', defaultCol: 'grid-essenciais',
+    matchProfile: { 
+      kael: 'O mínimo obrigatório (843 pts) já ajuda, mas se você pede muito iFood, vale a pena jogar seus pontos livres para cá.', 
+      sam: 'Compras de mercado pesam no orçamento. Você deve usar a flexibilidade para turbinar os 843 pontos iniciais com seu saldo livre.', 
+      ren: 'Alimentação de qualidade tem seu preço. O valor base (843 pts) é só o começo; engorde esse saldo com pontos flexíveis para focar em saúde.', 
+      ale: 'Garantir o mínimo de 843 pts é lei, mas usar seus pontos flexíveis aqui evita que você tire dinheiro do próprio bolso no mercado.' 
+    }, 
     quickPills: [
-      { text: 'Tem prazo pras mudanças?', intent: 'prazos' },
-      { text: '✨ Mais desconto na farmácia?', crossBenefit: 'farmacia' }
+      { text: 'Posso diminuir o valor?', intent: 'minimo' },
+      { text: 'Como aumentar meu saldo?', intent: 'aumentar' },
+      { text: '🏆 Dica de Ouro do Benício', intent: 'dicaouro' }
     ], 
+    dicaOuro: {
+      kael: '<strong>O mito do saldo baixo:</strong> Muita gente acha que o valor do VA/VR é fixo. A grande sacada dos benefícios flexíveis é que os 843 pontos são apenas o *piso* legal. Você pode pegar todos os seus **pontos livres** ou até mesmo o saldo gerado por um **downgrade no plano de saúde** e transferir tudo para o seu VR! Assim você turbina seu delivery sem tirar um real do salário.',
+      sam: '<strong>O mito do saldo baixo:</strong> A grande sacada dos benefícios flexíveis é que os 843 pontos do VA/VR são apenas o *piso* legal. Com família grande, você pode pegar todos os seus **pontos livres** ou até mesmo o saldo gerado por um **downgrade no plano de saúde** e transferir para o VA de mercado! Assim você faz a compra do mês sem pesar na conta corrente.',
+      ren: '<strong>O mito do saldo baixo:</strong> O valor do VA/VR não é fixo. Os 843 pontos são apenas o *piso* legal. Você pode pegar todos os seus **pontos livres** ou até mesmo o saldo gerado por um **downgrade no plano de saúde** e transferir para o seu VA/VR! Assim você foca em alimentos premium e orgânicos sem prejudicar seu orçamento de bem-estar.',
+      ale: '<strong>O mito do saldo baixo:</strong> Você sabia que o valor do VA/VR não é teto? Os 843 pontos são apenas o *piso* legal. A otimização financeira real acontece quando você pega todos os seus **pontos livres** ou saldo de um **downgrade de saúde** e transfere para o VA. Você abate custos primários (mercado) com pontos e retém seu salário líquido na conta.'
+    },
     intents: { 
+      minimo: { text: 'Por conta de nossa convenção coletiva sindical, o valor de **843 pontos** é o piso inegociável. Você não pode alocar menos que isso, apenas mais!', triggers: ['mínimo', 'minimo', 'diminuir va', 'menos de', '843'] },
+      aumentar: { text: 'Você pode alocar seus **Pontos Flexíveis** ilimitadamente no seu VA/VR. Qualquer saldo livre que você não usar em outros benefícios pode virar saldo de alimentação.', triggers: ['aumentar va', 'mais va', 'mais vr', 'aumentar saldo'] },
       prazos: { text: 'Alterações de saldo no VA/VR feitas durante a janela só passam a valer na recarga do dia 1º de agosto.', triggers: ['prazo va', 'mudar vr', 'recarga', 'quando cai o vr'] }
-    }, keywords: ['va', 'vr', 'alimentação', 'refeição', 'comida', 'ifood', 'mercado'] 
+    }, keywords: ['va', 'vr', 'alimentação', 'refeição', 'comida', 'ifood', 'mercado', '843'] 
   },
   carteiraflex: { 
-    id: 'carteiraflex', name: 'Carteira Flex', icon: '<i class="ph ph-wallet"></i>', badge: 'Estratégico', short: 'Seu saldo para reembolsos.', defaultCol: 'grid-explorar',
+    id: 'carteiraflex', name: 'Carteira Flex', icon: '<i class="ph ph-wallet"></i>', badge: '', short: 'Seu saldo para reembolsos.', defaultCol: 'grid-explorar',
     matchProfile: {
       kael: 'Você DEVE usar essa carteira. Como Idiomas acabou, jogue os pontos aqui e peça reembolso do curso.',
       sam: 'Excelente caixa mensal para reembolso de despesas de saúde não cobertas e escolaridade.',
@@ -221,7 +276,7 @@ const benefitsDB = {
     }, keywords: ['carteira', 'flex', 'reembolso', 'educação', 'escola']
   },
   stay: { 
-    id: 'stay', name: 'Stay Previdência', icon: '<i class="ph ph-piggy-bank"></i>', badge: 'Cashback', short: 'Aporte sem taxa.', defaultCol: 'grid-arriscar',
+    id: 'stay', name: 'Stay Previdência', icon: '<i class="ph ph-piggy-bank"></i>', badge: 'Novidade', short: 'Aporte sem taxa.', defaultCol: 'grid-arriscar',
     matchProfile: {
       kael: 'Como é jovem. Os juros compostos são seus melhores amigos. Aportar pontos flexíveis é enriquecer sem esforço.',
       sam: 'Garanta a estabilidade universitária da família sem precisar tirar dinheiro do seu salário agora.',
@@ -238,19 +293,19 @@ const benefitsDB = {
     }, keywords: ['stay', 'previdência', 'previdencia', 'investir', 'dinheiro', 'aposentadoria']
   },
   avus: { 
-    id: 'avus', name: 'Avus Família', icon: '<i class="ph ph-users-three"></i>', badge: 'Especial Pais', short: 'Saúde para agregados.', defaultCol: 'grid-explorar',
+    id: 'avus', name: 'Avus Família', icon: '<i class="ph ph-users-three"></i>', badge: 'Novidade', short: 'Saúde para agregados.', defaultCol: 'grid-explorar',
     matchProfile: {
       kael: 'Proteja seus pais à distância com um custo baixíssimo e evite surpresas médicas.',
-      sam: 'Este é **essencial para o seu perfil**! É a única forma de abrigar pais e sogros na nossa estrutura de saúde.',
+      sam: 'Este é **essencial para o seu perfil**! É a única forma de abrigar pais e sogros na nossa estrutura de saúde sem sustos.',
       ren: 'Garante atendimento rápido e descontos absurdos de 80% em farmácias preventivas.',
       ale: 'Pague um valor fixo e cubra a família estendida inteira sem a burocracia de planos de mercado.'
     },
     quickPills: [
-      { text: 'Tem cobertura de exames?', intent: 'pais' },
+      { text: 'Posso colocar mãe e pai?', intent: 'pais' },
       { text: '✨ Cobrir o dentista deles?', crossBenefit: 'odonto' }
     ],
     intents: { 
-      pais: { text: 'Aceita tranquilamente pais, mães, sogros e irmãos com acesso a telemedicina 24h e farmácias sem carência.', triggers: ['pai', 'mãe', 'mae', 'sogro', 'sogra', 'agregados', 'incluir mae', 'incluir pai'] }
+      pais: { text: 'O Avus aceita tranquilamente pais, mães, sogros e irmãos com acesso a telemedicina 24h e farmácias sem carência e sem limite de idade.', triggers: ['pai', 'mãe', 'mae', 'sogro', 'sogra', 'agregados', 'incluir mae', 'incluir pai'] }
     }, keywords: ['avus', 'telemedicina', 'consulta online'] 
   },
   wellhub: { 
@@ -261,18 +316,18 @@ const benefitsDB = {
     ], intents: {}, keywords: ['wellhub', 'gympass', 'academia', 'musculação', 'exercício', 'saude mental'] 
   },
   meupet: { 
-    id: 'meupet', name: 'Meu Pet Club', icon: '<i class="ph ph-paw-print"></i>', badge: 'Ação Urgente', short: 'Cobertura veterinária.', defaultCol: 'grid-explorar',
+    id: 'meupet', name: 'Meu Pet Club', icon: '<i class="ph ph-paw-print"></i>', badge: 'Vem que tem mudança', short: 'Cobertura veterinária.', defaultCol: 'grid-explorar',
     matchProfile: { kael: 'Seu parceiro de rotina protegido contra imprevistos caros.', sam: 'Cuidado extra pro bichinho das crianças.', ren: 'Proteção para quem te traz equilíbrio todos os dias.', ale: 'Evita sustos financeiros altos em urgências veterinárias.' }, 
     quickPills: [
       { text: 'O plano Emergencial sumiu?', intent: 'emergencial' },
       { text: '✨ Vacinas na Carteira Flex?', crossBenefit: 'carteiraflex' }
     ], 
     intents: { 
-      emergencial: { text: 'O plano Emergencial foi descontinuado! Você deve migrar para os planos Basic, Plus ou Total agora durante a eleição.', triggers: ['emergencial', 'plano antigo pet', 'acabou o emergencial'] }
+      emergencial: { text: 'O plano Emergencial foi descontinuado do regulamento! Você deve migrar para os planos Basic, Plus ou Total agora durante a eleição.', triggers: ['emergencial', 'plano antigo pet', 'acabou o emergencial'] }
     }, keywords: ['pet', 'cachorro', 'gato', 'veterinario', 'meu pet club'] 
   },
   leggal: { 
-    id: 'leggal', name: 'Leggal Jurídico', icon: '<i class="ph ph-scales"></i>', badge: 'Grátis', short: 'Advogados corporativos sem custo.', defaultCol: 'grid-arriscar',
+    id: 'leggal', name: 'Leggal Jurídico', icon: '<i class="ph ph-scales"></i>', badge: '', short: 'Advogados corporativos sem custo.', defaultCol: 'grid-arriscar',
     matchProfile: { kael: 'Revise contratos de locação do seu apartamento novo de graça.', sam: 'Apoio especializado em direitos imobiliários e consumidor.', ren: 'Jogue as burocracias para eles e foque na sua paz de espírito.', ale: 'Consultoria VIP gratuita (ROI altíssimo). A adesão hoje é 0%, aproveite.' }, 
     quickPills: [
       { text: 'Qual o custo em pontos?', intent: 'flex' },
@@ -307,7 +362,7 @@ const benefitsDB = {
   }
 };
 
-const intentKeywords = { downgrade: ['downgrade', 'reduzir'], upgrade: ['upgrade', 'aumentar', 'carência'], flex: ['pontos', 'flex', 'flexível'], prazos: ['prazo', 'eleição', 'nota'], desconto: ['desconto', 'folha'], pais: ['pai', 'mãe', 'sogro'], dependentes: ['dependente', 'filho', 'esposa', 'irmão', 'irmao'], idiomas: ['idioma', 'inglês', 'espanhol'], emergencial: ['emergencial'], cashback: ['cashback', 'bônus'], fixo: ['fixo', 'mudar o valor'] };
+const intentKeywords = { downgrade: ['downgrade', 'reduzir'], upgrade: ['upgrade', 'aumentar', 'carência'], flex: ['pontos', 'flex', 'flexível'], prazos: ['prazo', 'eleição', 'nota'], desconto: ['desconto', 'folha'], pais: ['pai', 'mãe', 'sogro'], dependentes: ['dependente', 'filho', 'esposa', 'irmão', 'irmao'], idiomas: ['idioma', 'inglês', 'espanhol'], emergencial: ['emergencial'], cashback: ['cashback', 'bônus'], fixo: ['fixo', 'mudar o valor'], rede: ['rede', 'hospital', 'hospitais', 'credenciada'], planos: ['planos odonto', 'diferença', 'diferenca', 'cobertura', 'aparelho', 'ortodontia', '30x', '36x', 'upgrade vida'], minimo: ['mínimo', 'minimo', 'diminuir va', 'menos de', '843'], aumentar: ['aumentar va', 'mais va', 'mais vr', 'aumentar saldo'] };
 
 let userProfile = null; let hasPet = false;
 
@@ -401,7 +456,10 @@ function injectCardHTML(benefitId, container) {
   const card = document.createElement('div'); card.className = 'benefit-card'; card.id = `card-${benefitId}`;
   card.onclick = () => openCardWithContext(benefitId, null, false);
 
-  let badgeClass = b.badge === 'Obrigatório' ? 'badge-compulsory' : (b.badge.includes('Atenção') || b.badge.includes('Urgente') ? 'badge-alert' : (b.badge === 'Especial Pais' ? 'badge-special' : 'badge-highlight'));
+  let badgeClass = '';
+  if (b.badge === 'Novidade') badgeClass = 'badge-novidade';
+  else if (b.badge === 'Vem que tem mudança') badgeClass = 'badge-mudanca';
+
   let badgeHtml = b.badge ? `<span class="badge ${badgeClass}">${b.badge}</span>` : '';
 
   let pillsHtml = '';
@@ -410,6 +468,8 @@ function injectCardHTML(benefitId, container) {
     b.quickPills.forEach(pill => { 
       if(pill.crossBenefit) {
         pillsHtml += `<button class="pill cross-sell" onclick="event.stopPropagation(); triggerCrossSell('${pill.text}', '${pill.crossBenefit}')">${pill.text}</button>`; 
+      } else if (pill.intent === 'dicaouro') {
+        pillsHtml += `<button class="pill gold" onclick="event.stopPropagation(); triggerPill('${pill.text}', '${benefitId}', '${pill.intent}')">${pill.text}</button>`;
       } else {
         pillsHtml += `<button class="pill" onclick="event.stopPropagation(); triggerPill('${pill.text}', '${benefitId}', '${pill.intent}')">${pill.text}</button>`; 
       }
@@ -439,7 +499,6 @@ function injectCardHTML(benefitId, container) {
   container.appendChild(card);
 }
 
-// MÁGICA DO CROSS-SELL
 function triggerCrossSell(text, targetBenefitId) {
   appendUserMsg(text);
   setTimeout(() => {
@@ -473,7 +532,10 @@ function openCardWithContext(benefitId, intentKey = null, triggeredByChat = true
   const dynamicView = document.getElementById(`dynamic-${benefitId}`);
   dynamicView.className = 'dynamic-view'; 
   
-  if (intentKey && b.intents[intentKey]) {
+  if (intentKey === 'dicaouro' && b.dicaOuro) {
+    dynamicView.innerHTML = `<div class="dynamic-header">🏆 DICA DE OURO DO BENÍCIO:</div>${b.dicaOuro[userProfile]}`;
+    dynamicView.classList.add('active'); 
+  } else if (intentKey && b.intents[intentKey]) {
     dynamicView.innerHTML = `<div class="dynamic-header">⚡ BENÍCIO RESPONDE:</div>${b.intents[intentKey].text}`;
     dynamicView.classList.add('active'); 
   } else {
@@ -486,7 +548,7 @@ function openCardWithContext(benefitId, intentKey = null, triggeredByChat = true
   if (triggeredByChat && intentKey) {
     appendBotMsg(`Destaquei a resposta no card do **${b.name}**!`);
   } else if (!triggeredByChat) {
-    appendBotMsg(`Você está explorando o **${b.name}**. Clique nas perguntas dentro do card para saber as regras ou encontrar novos benefícios conexos!`);
+    appendBotMsg(`Você está explorando o **${b.name}**. Clique nas pílulas dentro do card para ver dicas de ouro e conexões com outros benefícios!`);
   }
 }
 
@@ -509,6 +571,11 @@ function handleTextInput() {
     if (targetBenefitId) break;
   }
 
+  if (!targetBenefitId && (val.includes('dica') || val.includes('ouro'))) {
+     targetBenefitId = 'saude';
+     detectedIntent = 'dicaouro';
+  }
+
   if (!targetBenefitId) {
     for (const [bId, bData] of Object.entries(benefitsDB)) {
       if (bData.keywords && bData.keywords.some(k => val.includes(k))) {
@@ -527,7 +594,7 @@ function handleTextInput() {
     if (targetBenefitId) {
       openCardWithContext(targetBenefitId, detectedIntent, true);
     } else {
-      appendBotMsg(`Confesso que não encontrei uma regra exata para "${rawVal}". Tente usar palavras-chave como **carência, pais, reembolso, cashback, inglês ou vacina**!`);
+      appendBotMsg(`Confesso que não encontrei uma regra exata para "${rawVal}". Tente usar palavras-chave como **carência, pais, reembolso, cashback ou rede credenciada**!`);
     }
   }, 600);
 }
